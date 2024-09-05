@@ -37,27 +37,98 @@ public class BinarySearchTree implements Tree{
 
     @Override
     public int minimo() {
-        return 0;
+        if (root == null)
+            throw new IllegalStateException("Árvore vazia");
+
+        Node currentNode = root;
+        while (currentNode.left != null)
+            currentNode = currentNode.left;
+
+        return currentNode.value;
     }
 
     @Override
     public int maximo() {
-        return 0;
+        if (root == null)
+            throw new IllegalStateException("Árvore vazia");
+
+        Node currentNode = root;
+        while (currentNode.right != null)
+            currentNode = currentNode.right;
+
+        return currentNode.value;
     }
 
     @Override
     public void insereElemento(int valor) {
-        return;
+        root = inserirRecursivamente(root, valor);
+    }
+
+    private Node inserirRecursivamente(Node root, int valor) {
+        if (root == null) {
+            return new Node(valor);
+        }
+
+        if (valor < root.value) {
+            root.left = inserirRecursivamente(root.left, valor);
+        } else if (valor > root.value) {
+            root.right = inserirRecursivamente(root.right, valor);
+        }
+
+        return root;
     }
 
     @Override
     public void remove(int valor) {
-        return;
+        root = removerRecursivamente(root, valor);
+    }
+
+    private Node removerRecursivamente(Node root, int valor) {
+        if (root == null)
+            return root;
+
+        if (valor < root.value) {
+            root.left = removerRecursivamente(root.left, valor);
+        } else if (valor > root.value) {
+            root.right = removerRecursivamente(root.right, valor);
+        } else {
+            // Nó com apenas um filho ou sem filhos
+            if (root.left == null)
+                return root.right;
+            else if (root.right == null)
+                return root.left;
+
+            // Nó com dois filhos: obter o menor nó da subárvore direita
+            root.value = minimoSubArvoreDireita(root.right);
+
+            // Remover o menor nó da subárvore direita
+            root.right = removerRecursivamente(root.right, root.value);
+        }
+        return root;
+    }
+
+    private int minimoSubArvoreDireita(Node node) {
+        int minValue = node.value;
+        while (node.left != null) {
+            minValue = node.left.value;
+            node = node.left;
+        }
+        return minValue;
     }
 
     @Override
     public int[] preOrdem() {
-        return new int[]{1,2};
+        List<Integer> list = new ArrayList<>();
+        preOrdemRecursivamente(root, list);
+        return list.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    private void preOrdemRecursivamente(Node root, List<Integer> list) {
+        if (root != null) {
+            list.add(root.value);
+            preOrdemRecursivamente(root.left, list);
+            preOrdemRecursivamente(root.right, list);
+        }
     }
 
     @Override
