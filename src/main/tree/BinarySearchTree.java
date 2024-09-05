@@ -133,12 +133,32 @@ public class BinarySearchTree implements Tree{
 
     @Override
     public int[] emOrdem() {
-        return new int[]{1,2};
+        List<Integer> list = new ArrayList<>();
+        emOrdemRecursivamente(root, list);
+        return list.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    private void emOrdemRecursivamente(Node root, List<Integer> list) {
+        if (root != null) {
+            emOrdemRecursivamente(root.left, list);
+            list.add(root.value);
+            emOrdemRecursivamente(root.right, list);
+        }
     }
 
     @Override
     public int[] posOrdem() {
-        return new int[]{1,2};
+        List<Integer> list = new ArrayList<>();
+        posOrdemRecursivamente(root, list);
+        return list.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    private void posOrdemRecursivamente(Node root, List<Integer> list) {
+        if (root != null) {
+            posOrdemRecursivamente(root.left, list);
+            posOrdemRecursivamente(root.right, list);
+            list.add(root.value);
+        }
     }
 
 }
